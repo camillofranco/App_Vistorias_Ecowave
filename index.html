@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Ecowave Vistoria</title>
+    <meta name="theme-color" content="#1a1c2c">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Ecowave">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="icon" href="icon-192.png">
+    <link rel="manifest" href="manifest.json">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+</head>
+<body>
+
+    <header class="app-header">
+        <div class="header-content">
+            <div class="logo-wrapper">
+                <img src="ecowave.png" alt="Ecowave" class="logo-header">
+            </div>
+            <span class="badge">OFFLINE READY</span>
+        </div>
+    </header>
+
+    <main class="app-container">
+        <!-- Dados Unidade -->
+        <section class="card glass-card">
+            <div class="card-header">Unidade</div>
+            <div class="card-body">
+                <div class="input-row">
+                    <div class="input-group"><label>Data</label><input type="date" id="data-vistoria" readonly></div>
+                    <div class="input-group"><label>Hora</label><input type="time" id="hora-vistoria" readonly></div>
+                </div>
+                <div class="input-group"><label>Condomínio</label><input type="text" id="condominio" placeholder="Nome do prédio"></div>
+                <div class="input-row">
+                    <div class="input-group"><label>Bloco</label><input type="text" id="bloco"></div>
+                    <div class="input-group"><label>Apt/Uni</label><input type="text" id="apto"></div>
+                </div>
+                <div class="input-row">
+                    <div class="input-group"><label>Técnico</label><input type="text" id="tecnico"></div>
+                    <div class="input-group"><label>Tel</label><input type="tel" id="telefone"></div>
+                </div>
+            </div>
+        </section>
+
+        <div id="medidores-container"></div>
+
+        <div class="action-buttons-grid">
+            <button onclick="adicionarMedidor('Hidrometro')" class="btn-add btn-blue">
+                <i class="fas fa-faucet"></i> <span>Água</span>
+            </button>
+            <button onclick="adicionarMedidor('Gasometro')" class="btn-add btn-orange">
+                <i class="fas fa-fire"></i> <span>Gás</span>
+            </button>
+            <button onclick="adicionarMedidor('PontoConsumo')" class="btn-add btn-green">
+                <i class="fas fa-chart-line"></i> <span>Teste Ponto</span>
+            </button>
+        </div>
+
+        <!-- Avaliação -->
+        <section class="card glass-card">
+            <div class="card-header">Geral</div>
+            <div class="card-body">
+                <div class="input-group">
+                    <label>Estação do Ano</label>
+                    <select id="estacao-ano" onchange="recalcularTodosPontos()">
+                        <option value="primavera_outono">Primavera / Outono</option>
+                        <option value="verao">Verão</option>
+                        <option value="inverno">Inverno</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Estado Medidores</label>
+                    <input type="text" id="estado-medidores" placeholder="Ex: Bom estado">
+                    <div class="photo-capture-v2"><input type="file" accept="image/*" capture="environment" onchange="anexarFotoGeral(this, 'img-geral-med')"><img id="img-geral-med" class="preview-img"></div>
+                </div>
+                <div class="input-group">
+                    <label>Temp. Saída Aquecedor</label>
+                    <input type="text" id="temp-aquecedor">
+                    <div class="photo-capture-v2"><input type="file" accept="image/*" capture="environment" onchange="anexarFotoGeral(this, 'img-geral-temp-aq')"><img id="img-geral-temp-aq" class="preview-img"></div>
+                </div>
+                <div class="input-group">
+                    <label>Última Manut. Aquecedor</label>
+                    <input type="text" id="manutencao-gas">
+                    <div class="photo-capture-v2"><input type="file" accept="image/*" capture="environment" onchange="anexarFotoGeral(this, 'img-geral-manut')"><img id="img-geral-manut" class="preview-img"></div>
+                </div>
+                <div class="input-row">
+                    <div class="input-group"><label>T. Quente (°C)</label><input type="number" id="temp-quente"></div>
+                    <div class="input-group"><label>T. Fria (°C)</label><input type="number" id="temp-fria"></div>
+                </div>
+                <div class="input-group">
+                    <label>Pressão (mca)</label>
+                    <input type="text" id="pressao-agua">
+                    <div class="photo-capture-v2"><input type="file" accept="image/*" capture="environment" onchange="anexarFotoGeral(this, 'img-geral-press')"><img id="img-geral-press" class="preview-img"></div>
+                </div>
+                <div class="input-group">
+                    <label>Observações</label>
+                    <textarea id="observacoes" rows="2"></textarea>
+                    <div class="photo-capture-v2"><input type="file" accept="image/*" capture="environment" onchange="anexarFotoGeral(this, 'img-geral-obs')"><img id="img-geral-obs" class="preview-img"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Assinatura -->
+        <section class="card glass-card">
+            <div class="card-header">Assinatura</div>
+            <div class="card-body">
+                <div class="signature-wrap"><canvas id="signature-pad"></canvas></div>
+                <button type="button" class="btn-clear" onclick="limparAssinatura()">Limpar</button>
+            </div>
+        </section>
+
+        <button type="button" class="btn-primary" onclick="gerarPDF()">
+            <i class="fas fa-file-pdf"></i> GERAR RELATÓRIO
+        </button>
+    </main>
+
+    <div id="loadingOverlay" class="overlay" style="display:none;"><div class="spinner"></div><p id="loadingMsg">Gerando PDF...</p></div>
+    <div id="shareOverlay" class="overlay share-menu" style="display:none;"><div class="share-content"><h3>PRONTO!</h3><div class="share-grid"><button id="btnShare"><i class="fab fa-whatsapp"></i><span>Enviar</span></button><button id="btnDownload"><i class="fas fa-download"></i><span>Baixar</span></button></div><button class="btn-close" onclick="fecharShare()">Novo</button></div></div>
+
+    <!-- TEMPLATES -->
+    <template id="tmpl-hidrometro">
+        <section class="card medidor-card" data-tipo="hidrometro">
+            <div class="card-header"><span>Teste Água #<span class="num-id"></span></span><button class="btn-remove" onclick="this.closest('.card').remove()"><i class="fas fa-trash"></i></button></div>
+            <div class="card-body">
+                <div class="input-row">
+                    <div class="input-group"><label>Antes</label><input type="number" step="0.001" class="val-antes" oninput="calcular(this)"><div class="photo-capture-v2 simple"><input type="file" accept="image/*" capture="environment" onchange="anexarFoto(this, 'img-antes')"><img class="preview-img img-antes"></div></div>
+                    <div class="input-group"><label>Após</label><input type="number" step="0.001" class="val-apos" oninput="calcular(this)"><div class="photo-capture-v2 simple"><input type="file" accept="image/*" capture="environment" onchange="anexarFoto(this, 'img-apos')"><img class="preview-img img-apos"></div></div>
+                </div>
+                <div class="input-group"><label>Resultado (L)</label><input type="text" class="med-res" readonly></div>
+            </div>
+        </section>
+    </template>
+
+    <template id="tmpl-gasometro">
+        <section class="card medidor-card" data-tipo="gasometro">
+            <div class="card-header"><span>Teste Gás #<span class="num-id"></span></span><button class="btn-remove" onclick="this.closest('.card').remove()"><i class="fas fa-trash"></i></button></div>
+            <div class="card-body">
+                <div class="input-row">
+                    <div class="input-group"><label>Antes</label><input type="number" step="0.001" class="val-antes" oninput="calcular(this)"><div class="photo-capture-v2 simple"><input type="file" accept="image/*" capture="environment" onchange="anexarFoto(this, 'img-antes')"><img class="preview-img img-antes"></div></div>
+                    <div class="input-group"><label>Após</label><input type="number" step="0.001" class="val-apos" oninput="calcular(this)"><div class="photo-capture-v2 simple"><input type="file" accept="image/*" capture="environment" onchange="anexarFoto(this, 'img-apos')"><img class="preview-img img-apos"></div></div>
+                </div>
+                <div class="input-group"><label>Resultado (L)</label><input type="text" class="med-res" readonly></div>
+            </div>
+        </section>
+    </template>
+
+    <template id="tmpl-ponto-consumo">
+        <section class="card medidor-card" data-tipo="pontoconsumo">
+            <div class="card-header"><span>Ponto de Consumo #<span class="num-id"></span></span><button class="btn-remove" onclick="this.closest('.card').remove()"><i class="fas fa-trash"></i></button></div>
+            <div class="card-body">
+                <div class="input-group"><label>Local (Ex: Chuveiro)</label><input type="text" class="ponto-local"></div>
+                <div class="input-row">
+                    <div class="input-group"><label>Temp. Teste (°C)</label><input type="number" class="ponto-temp" value="38"></div>
+                    <div class="input-group"><label>Tempo (Seg)</label><input type="number" class="ponto-tempo" value="10"></div>
+                </div>
+                
+                <p style="font-size: 10px; color: #aaa; margin: 10px 0 5px 0;">LEITURA ÁGUA (LITROS)</p>
+                <div class="input-row">
+                    <div class="input-group"><label>Antes</label><input type="number" step="0.1" class="ponto-agua-antes" value="0" readonly oninput="calcularPonto(this)"></div>
+                    <div class="input-group"><label>Após</label><input type="number" step="0.1" class="ponto-agua-apos" oninput="calcularPonto(this)"></div>
+                </div>
+
+                <p style="font-size: 10px; color: #aaa; margin: 10px 0 5px 0;">LEITURA GÁS (LITROS)</p>
+                <div class="input-row">
+                    <div class="input-group"><label>Antes</label><input type="number" step="0.001" class="ponto-gas-antes" oninput="calcularPonto(this)"></div>
+                    <div class="input-group"><label>Após</label><input type="number" step="0.001" class="ponto-gas-apos" oninput="calcularPonto(this)"></div>
+                </div>
+
+                <div class="consumption-report">
+                    <p><b>Vazão Água:</b> <span class="vaz-agua">-</span> L/min</p>
+                    <p><b>Vazão Gás:</b> <span class="vaz-gas">-</span> L/min</p>
+                    <div class="proportion-box"><span class="frase-v2">Aguardando leituras...</span></div>
+                </div>
+            </div>
+        </section>
+    </template>
+
+    <script>
+        // Força limpeza de caches antigos e re-registro do service worker atualizado
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function(regs) {
+                return Promise.all(regs.map(function(r) { return r.unregister(); }));
+            }).then(function() {
+                return caches.keys();
+            }).then(function(names) {
+                return Promise.all(names.map(function(n) { return caches.delete(n); }));
+            }).then(function() {
+                navigator.serviceWorker.register('./service-worker.js');
+            }).catch(function(e) { console.warn('SW cleanup:', e); });
+        }
+    </script>
+    <script src="app.min.js?v=10"></script>
+</body>
+</html>
