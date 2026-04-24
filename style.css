@@ -1,5 +1,6 @@
 :root {
     --bg: #0f0c29;
+    --bg-gradient: radial-gradient(circle at top right, #302b63 0%, #0f0c29 50%, #0f0c29 100%);
     --card-bg: rgba(255, 255, 255, 0.04);
     --accent: #2ecc71;  
     --accent-dark: #27ae60;
@@ -9,8 +10,29 @@
     --safe-top: env(safe-area-inset-top);
 }
 
+body.theme-alto-consumo {
+    --bg: #3b0000;
+    --bg-gradient: radial-gradient(circle at top right, #800000 0%, #3b0000 50%, #2b0000 100%);
+    --accent: #ff4d4d;
+    --accent-dark: #cc0000;
+}
+
+body.theme-vazamento {
+    --bg: #001f3f;
+    --bg-gradient: radial-gradient(circle at top right, #005f99 0%, #001f3f 50%, #000c1a 100%);
+    --accent: #00d2ff;
+    --accent-dark: #3a7bd5;
+}
+
+body.theme-troca {
+    --bg: #3e2723;
+    --bg-gradient: radial-gradient(circle at top right, #5d4037 0%, #3e2723 50%, #1b0000 100%);
+    --accent: #ff9800;
+    --accent-dark: #f57c00;
+}
+
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-body { margin: 0; padding: 0; font-family: 'Outfit', sans-serif; background: #0f0c29; background-image: radial-gradient(circle at top right, #302b63 0%, #0f0c29 50%, #0f0c29 100%); background-attachment: fixed; color: var(--text); overflow-x: hidden; overscroll-behavior-y: none; }
+body { margin: 0; padding: 0; font-family: 'Outfit', sans-serif; background: var(--bg); background-image: var(--bg-gradient); background-attachment: fixed; color: var(--text); overflow-x: hidden; overscroll-behavior-y: none; }
 
 .app-header { position: fixed; top: 0; left: 0; width: 100%; height: calc(75px + var(--safe-top)); background: rgba(15, 12, 41, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 1000; border-bottom: 1px solid var(--border); display: flex; align-items: center; padding-top: var(--safe-top); transition: all 0.3s ease; }
 .header-content { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 0 24px; }
@@ -68,3 +90,38 @@ option { background: #1a1c2c; color: #fff; }
 .share-grid button i { font-size: 20px; }
 .share-grid button:active { transform: scale(0.95); background: rgba(255,255,255,0.1); }
 .btn-close { background: none; border: none; color: #a0a0a5; font-weight: 600; font-size: 15px; padding: 10px; cursor: pointer; }
+
+/* Home Modal */
+.home-modal {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: #0f0c29; z-index: 3000;
+    display: flex; flex-direction: column; padding: 20px;
+    padding-top: calc(40px + var(--safe-top));
+    overflow-y: auto;
+}
+.home-logo { width: 200px; margin: 0 auto 30px; display: block; }
+.home-title { text-align: center; font-size: 24px; font-weight: 700; margin-bottom: 20px; }
+.vistoria-type-card {
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px; padding: 20px; margin-bottom: 15px;
+    transition: all 0.2s;
+}
+.vistoria-type-card h3 { margin: 0 0 10px 0; font-size: 18px; }
+.vistoria-type-card p { margin: 0 0 15px 0; font-size: 13px; color: var(--text-muted); }
+.vistoria-options { display: grid; gap: 10px; }
+.btn-select-vistoria {
+    background: rgba(255,255,255,0.1); border: none; padding: 12px;
+    border-radius: 12px; color: white; font-weight: 600; cursor: pointer;
+    transition: all 0.2s; font-size: 14px;
+}
+.btn-select-vistoria:active { transform: scale(0.95); background: var(--accent); }
+
+/* theme accents for cards */
+.vt-geral h3 { color: #2ecc71; }
+.vt-geral .btn-select-vistoria:active { background: #2ecc71; }
+.vt-alto h3 { color: #ff4d4d; }
+.vt-alto .btn-select-vistoria:active { background: #ff4d4d; }
+.vt-vazamento h3 { color: #00d2ff; }
+.vt-vazamento .btn-select-vistoria:active { background: #00d2ff; }
+.vt-troca h3 { color: #ff9800; }
+.vt-troca .btn-select-vistoria:active { background: #ff9800; }

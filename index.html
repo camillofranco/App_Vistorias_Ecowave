@@ -18,13 +18,56 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
 </head>
 <body>
+    <!-- Modal Home -->
+    <div id="homeModal" class="home-modal">
+        <img src="ecowave.png" alt="Ecowave" class="home-logo">
+        <div class="home-title">Selecionar Vistoria</div>
+        
+        <div class="vistoria-type-card vt-geral">
+            <h3>Geral de Consumos</h3>
+            <p>Vistoria completa padrão.</p>
+            <div class="vistoria-options">
+                <button class="btn-select-vistoria" onclick="iniciarVistoria('geral', 'completa')">Iniciar Vistoria Geral</button>
+            </div>
+        </div>
+
+        <div class="vistoria-type-card vt-alto">
+            <h3>Alto Consumo</h3>
+            <p>Focada em detecção de alto consumo.</p>
+            <div class="vistoria-options">
+                <button class="btn-select-vistoria" onclick="iniciarVistoria('alto-consumo', 'agua-gas')">Água e Gás</button>
+                <button class="btn-select-vistoria" onclick="iniciarVistoria('alto-consumo', 'agua')">Somente Água</button>
+                <button class="btn-select-vistoria" onclick="iniciarVistoria('alto-consumo', 'gas')">Somente Gás</button>
+            </div>
+        </div>
+
+        <div class="vistoria-type-card vt-vazamento">
+            <h3>Vazamento</h3>
+            <p>Verificação de possíveis vazamentos.</p>
+            <div class="vistoria-options">
+                <button class="btn-select-vistoria" onclick="iniciarVistoria('vazamento', 'agua-gas')">Água e Gás</button>
+                <button class="btn-select-vistoria" onclick="iniciarVistoria('vazamento', 'agua')">Somente Água</button>
+                <button class="btn-select-vistoria" onclick="iniciarVistoria('vazamento', 'gas')">Somente Gás</button>
+            </div>
+        </div>
+
+        <div class="vistoria-type-card vt-troca">
+            <h3>Troca de Equipamento</h3>
+            <p>Registro de substituição de medidores.</p>
+            <div class="vistoria-options">
+                <button class="btn-select-vistoria" onclick="iniciarVistoria('troca', 'agua-gas')">Água e Gás</button>
+                <button class="btn-select-vistoria" onclick="iniciarVistoria('troca', 'agua')">Somente Água</button>
+                <button class="btn-select-vistoria" onclick="iniciarVistoria('troca', 'gas')">Somente Gás</button>
+            </div>
+        </div>
+    </div>
 
     <header class="app-header">
         <div class="header-content">
             <div class="logo-wrapper">
                 <img src="ecowave.png" alt="Ecowave" class="logo-header">
             </div>
-            <span class="badge">OFFLINE READY</span>
+            <span class="badge" id="header-badge">OFFLINE READY</span>
         </div>
     </header>
 
@@ -44,21 +87,20 @@
                 </div>
                 <div class="input-row">
                     <div class="input-group"><label>Técnico</label><input type="text" id="tecnico"></div>
-                    <div class="input-group"><label>Tel</label><input type="tel" id="telefone"></div>
                 </div>
             </div>
         </section>
 
         <div id="medidores-container"></div>
 
-        <div class="action-buttons-grid">
-            <button onclick="adicionarMedidor('Hidrometro')" class="btn-add btn-blue">
+        <div class="action-buttons-grid" id="action-buttons">
+            <button onclick="adicionarMedidor('Hidrometro')" class="btn-add btn-blue" id="btn-add-agua">
                 <i class="fas fa-faucet"></i> <span>Água</span>
             </button>
-            <button onclick="adicionarMedidor('Gasometro')" class="btn-add btn-orange">
+            <button onclick="adicionarMedidor('Gasometro')" class="btn-add btn-orange" id="btn-add-gas">
                 <i class="fas fa-fire"></i> <span>Gás</span>
             </button>
-            <button onclick="adicionarMedidor('PontoConsumo')" class="btn-add btn-green">
+            <button onclick="adicionarMedidor('PontoConsumo')" class="btn-add btn-green" id="btn-add-ponto">
                 <i class="fas fa-chart-line"></i> <span>Teste Ponto</span>
             </button>
         </div>
@@ -67,40 +109,42 @@
         <section class="card glass-card">
             <div class="card-header">Geral</div>
             <div class="card-body">
-                <div class="input-group">
-                    <label>Estação do Ano</label>
-                    <select id="estacao-ano" onchange="recalcularTodosPontos()">
-                        <option value="primavera_outono">Primavera / Outono</option>
-                        <option value="verao">Verão</option>
-                        <option value="inverno">Inverno</option>
-                    </select>
+                <div id="campos-vistoria-geral">
+                    <div class="input-group">
+                        <label>Estação do Ano</label>
+                        <select id="estacao-ano" onchange="recalcularTodosPontos()">
+                            <option value="primavera_outono">Primavera / Outono</option>
+                            <option value="verao">Verão</option>
+                            <option value="inverno">Inverno</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Estado Medidores</label>
+                        <input type="text" id="estado-medidores" placeholder="Ex: Bom estado">
+                        <div class="photo-capture-v2"><input type="file" accept="image/*" capture="environment" onchange="anexarFotoGeral(this, 'img-geral-med')"><img id="img-geral-med" class="preview-img"></div>
+                    </div>
+                    <div class="input-group">
+                        <label>Temp. Saída Aquecedor</label>
+                        <input type="text" id="temp-aquecedor">
+                        <div class="photo-capture-v2"><input type="file" accept="image/*" capture="environment" onchange="anexarFotoGeral(this, 'img-geral-temp-aq')"><img id="img-geral-temp-aq" class="preview-img"></div>
+                    </div>
+                    <div class="input-group">
+                        <label>Última Manut. Aquecedor</label>
+                        <input type="text" id="manutencao-gas">
+                        <div class="photo-capture-v2"><input type="file" accept="image/*" capture="environment" onchange="anexarFotoGeral(this, 'img-geral-manut')"><img id="img-geral-manut" class="preview-img"></div>
+                    </div>
+                    <div class="input-row">
+                        <div class="input-group"><label>T. Quente (°C)</label><input type="number" id="temp-quente"></div>
+                        <div class="input-group"><label>T. Fria (°C)</label><input type="number" id="temp-fria"></div>
+                    </div>
+                    <div class="input-group">
+                        <label>Pressão (mca)</label>
+                        <input type="text" id="pressao-agua">
+                        <div class="photo-capture-v2"><input type="file" accept="image/*" capture="environment" onchange="anexarFotoGeral(this, 'img-geral-press')"><img id="img-geral-press" class="preview-img"></div>
+                    </div>
                 </div>
                 <div class="input-group">
-                    <label>Estado Medidores</label>
-                    <input type="text" id="estado-medidores" placeholder="Ex: Bom estado">
-                    <div class="photo-capture-v2"><input type="file" accept="image/*" capture="environment" onchange="anexarFotoGeral(this, 'img-geral-med')"><img id="img-geral-med" class="preview-img"></div>
-                </div>
-                <div class="input-group">
-                    <label>Temp. Saída Aquecedor</label>
-                    <input type="text" id="temp-aquecedor">
-                    <div class="photo-capture-v2"><input type="file" accept="image/*" capture="environment" onchange="anexarFotoGeral(this, 'img-geral-temp-aq')"><img id="img-geral-temp-aq" class="preview-img"></div>
-                </div>
-                <div class="input-group">
-                    <label>Última Manut. Aquecedor</label>
-                    <input type="text" id="manutencao-gas">
-                    <div class="photo-capture-v2"><input type="file" accept="image/*" capture="environment" onchange="anexarFotoGeral(this, 'img-geral-manut')"><img id="img-geral-manut" class="preview-img"></div>
-                </div>
-                <div class="input-row">
-                    <div class="input-group"><label>T. Quente (°C)</label><input type="number" id="temp-quente"></div>
-                    <div class="input-group"><label>T. Fria (°C)</label><input type="number" id="temp-fria"></div>
-                </div>
-                <div class="input-group">
-                    <label>Pressão (mca)</label>
-                    <input type="text" id="pressao-agua">
-                    <div class="photo-capture-v2"><input type="file" accept="image/*" capture="environment" onchange="anexarFotoGeral(this, 'img-geral-press')"><img id="img-geral-press" class="preview-img"></div>
-                </div>
-                <div class="input-group">
-                    <label>Observações</label>
+                    <label>Observações / Parecer Técnico</label>
                     <textarea id="observacoes" rows="2"></textarea>
                     <div class="photo-capture-v2"><input type="file" accept="image/*" capture="environment" onchange="anexarFotoGeral(this, 'img-geral-obs')"><img id="img-geral-obs" class="preview-img"></div>
                 </div>
@@ -196,6 +240,6 @@
             }).catch(function(e) { console.warn('SW cleanup:', e); });
         }
     </script>
-    <script src="app.min.js?v=10"></script>
+    <script src="app.js?v=11"></script>
 </body>
 </html>
