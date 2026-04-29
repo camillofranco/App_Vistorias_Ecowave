@@ -125,3 +125,110 @@ option { background: #1a1c2c; color: #fff; }
 .vt-vazamento .btn-select-vistoria:active { background: #00d2ff; }
 .vt-troca h3 { color: #ff9800; }
 .vt-troca .btn-select-vistoria:active { background: #ff9800; }
+
+/* Advanced Technical Inspection Styles */
+.tech-stage-card {
+    border-left: 4px solid var(--accent);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.photo-meta-container {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 16px;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid var(--border);
+}
+
+.photo-meta-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.input-metadata {
+    font-size: 13px !important;
+    padding: 10px 12px !important;
+    border-radius: 12px !important;
+}
+
+.tech-info-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.status-badge {
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.status-pendente { background: #f1c40f; color: #000; }
+.status-concluida { background: #2ecc71; color: #fff; }
+.status-cancelada { background: #e74c3c; color: #fff; }
+
+.grav-baixa { color: #2ecc71; }
+.grav-media { color: #f1c40f; }
+.grav-alta { color: #e67e22; }
+.grav-risco { color: #e74c3c; animation: pulse-red 1.5s infinite; }
+
+@keyframes pulse-red {
+    0% { opacity: 1; }
+    50% { opacity: 0.6; }
+    100% { opacity: 1; }
+}
+
+.calc-result-box {
+    background: rgba(46, 204, 113, 0.1);
+    border: 1px solid rgba(46, 204, 113, 0.2);
+    padding: 12px;
+    border-radius: 12px;
+    margin-top: 10px;
+    font-size: 13px;
+}
+
+.hidden { display: none !important; }
+
+/* Improved button for adding photos */
+.btn-add-photo {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px dashed rgba(255, 255, 255, 0.3);
+    color: var(--text);
+    padding: 15px;
+    border-radius: 16px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.leitura-box {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    padding: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.leitura-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+}
+
+.btn-small-photo {
+    height: 40px !important;
+    font-size: 13px;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    background: rgba(255, 255, 255, 0.08) !important;
+}

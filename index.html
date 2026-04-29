@@ -92,6 +92,15 @@
         </section>
 
         <div id="medidores-container"></div>
+        
+        <!-- Novos containers para vistorias técnicas -->
+        <div id="tech-container" class="hidden">
+            <div id="tech-medidores-resumo" style="margin-bottom: 20px;"></div>
+            <div id="tech-etapas-container"></div>
+            <button class="btn-add-photo" id="btn-add-tech-etapa" onclick="adicionarEtapaTecnica()">
+                <i class="fas fa-plus-circle"></i> <span id="text-add-etapa">Adicionar Etapa</span>
+            </button>
+        </div>
 
         <div class="action-buttons-grid" id="action-buttons">
             <button onclick="adicionarMedidor('Hidrometro')" class="btn-add btn-blue" id="btn-add-agua">
@@ -147,6 +156,27 @@
                     <label>Observações / Parecer Técnico</label>
                     <textarea id="observacoes" rows="2"></textarea>
                     <div class="photo-capture-v2"><input type="file" accept="image/*" capture="environment" onchange="anexarFotoGeral(this, 'img-geral-obs')"><img id="img-geral-obs" class="preview-img"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Diagnóstico Técnico (Exclusivo para Alto Consumo, Vazamento, Troca) -->
+        <section id="diagnostico-tecnico-section" class="card glass-card hidden">
+            <div class="card-header">Diagnóstico Técnico</div>
+            <div class="card-body">
+                <div class="input-group">
+                    <label>Resultado / Diagnóstico</label>
+                    <select id="diag-resultado" onchange="atualizarRecomendacao()">
+                        <!-- Options will be populated via JS -->
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Recomendação / Orientações</label>
+                    <textarea id="diag-recomendacao" rows="3" placeholder="Orientações ao morador ou condomínio..."></textarea>
+                </div>
+                <div class="input-group">
+                    <label>Responsável Orientado</label>
+                    <input type="text" id="diag-responsavel" placeholder="Nome de quem acompanhou">
                 </div>
             </div>
         </section>
@@ -221,6 +251,202 @@
                     <p><b>Vazão Água:</b> <span class="vaz-agua">-</span> L/min</p>
                     <p><b>Vazão Gás:</b> <span class="vaz-gas">-</span> L/min</p>
                     <div class="proportion-box"><span class="frase-v2">Aguardando leituras...</span></div>
+                </div>
+            </div>
+        </section>
+    </template>
+
+    <!-- NOVOS TEMPLATES TÉCNICOS -->
+    <template id="tmpl-tech-photo">
+        <div class="photo-meta-container">
+            <div class="photo-capture-v2">
+                <input type="file" accept="image/*" capture="environment" onchange="processarFotoTecnica(this)">
+                <img class="preview-img">
+            </div>
+            <div class="photo-meta-grid">
+                <input type="text" class="input-metadata photo-legenda" placeholder="Legenda (Ex: Foto do medidor)">
+                <input type="text" class="input-metadata photo-local" placeholder="Local/Ambiente">
+                <textarea class="input-metadata photo-desc" placeholder="Descrição complementar" rows="1"></textarea>
+                <input type="text" class="input-metadata photo-ref" placeholder="Ponto de referência">
+            </div>
+            <button class="btn-remove" style="width: 100%; border-radius: 10px; margin-top: 10px; height: 30px; font-size: 11px;" onclick="this.closest('.photo-meta-container').remove()">Remover Foto</button>
+        </div>
+    </template>
+
+    <template id="tmpl-alto-consumo-teste">
+        <section class="card tech-stage-card" data-tipo="teste-alto-consumo">
+            <div class="card-header">
+                <span>Teste #<span class="num-id"></span></span>
+                <button class="btn-remove" onclick="this.closest('.card').remove()"><i class="fas fa-trash"></i></button>
+            </div>
+            <div class="card-body">
+                <div class="input-group">
+                    <label>Tipo de Teste</label>
+                    <select class="teste-tipo">
+                        <option value="pontos_fechados">Todos os pontos fechados</option>
+                        <option value="bacia">Bacia sanitária</option>
+                        <option value="torneira">Torneira</option>
+                        <option value="chuveiro">Chuveiro</option>
+                        <option value="registro_fechado">Registro fechado</option>
+                        <option value="aquecedor">Aquecedor</option>
+                        <option value="gas_desligado">Gás com equipamentos desligados</option>
+                        <option value="outro">Outro</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Ponto de Teste</label>
+                    <input type="text" class="teste-ponto" placeholder="Ex: Banheiro social, Cozinha...">
+                </div>
+                
+                <div class="leitura-box">
+                    <p class="leitura-title">MOMENTO INICIAL (ANTES)</p>
+                    <div class="tech-info-row">
+                        <div class="input-group"><label>Data/Hora Início</label><input type="datetime-local" class="teste-inicio" onchange="calcularVazaoTecnica(this)"></div>
+                        <div class="input-group"><label>Leitura Inicial</label><input type="number" step="0.001" class="teste-leitura-inic" oninput="calcularVazaoTecnica(this)" style="font-size: 16px; font-weight: bold; color: var(--accent);"></div>
+                    </div>
+                    <div class="fotos-etapa-container">
+                        <div class="lista-fotos"></div>
+                        <button class="btn-add-photo btn-small-photo" onclick="adicionarFotoEtapaEspecial(this, 'Foto Antes do Teste')">
+                            <i class="fas fa-camera"></i> Foto Antes do Teste
+                        </button>
+                    </div>
+                </div>
+
+                <div class="leitura-box" style="margin-top: 15px;">
+                    <p class="leitura-title">MOMENTO FINAL (DEPOIS)</p>
+                    <div class="tech-info-row">
+                        <div class="input-group"><label>Data/Hora Fim</label><input type="datetime-local" class="teste-fim" onchange="calcularVazaoTecnica(this)"></div>
+                        <div class="input-group"><label>Leitura Final</label><input type="number" step="0.001" class="teste-leitura-fim" oninput="calcularVazaoTecnica(this)" style="font-size: 16px; font-weight: bold; color: var(--accent);"></div>
+                    </div>
+                    <div class="fotos-etapa-container">
+                        <div class="lista-fotos"></div>
+                        <button class="btn-add-photo btn-small-photo" onclick="adicionarFotoEtapaEspecial(this, 'Foto Depois do Teste')">
+                            <i class="fas fa-camera"></i> Foto Depois do Teste
+                        </button>
+                    </div>
+                </div>
+
+                <div class="calc-result-box">
+                    <div><b>Consumo:</b> <span class="calc-consumo">-</span> L</div>
+                    <div><b>Vazão:</b> <span class="calc-vazao">-</span> L/min (<span class="calc-vazao-h">-</span> L/h)</div>
+                    <div style="margin-top:5px; font-weight:bold;">Resultado: <span class="calc-resultado">Aguardando dados...</span></div>
+                </div>
+                
+                <div class="input-group" style="margin-top: 20px;">
+
+                    <label>Observações do Teste</label>
+                    <textarea class="teste-obs" rows="2"></textarea>
+                </div>
+            </div>
+        </section>
+    </template>
+
+    <template id="tmpl-vazamento-ponto">
+        <section class="card tech-stage-card" data-tipo="ponto-vazamento">
+            <div class="card-header">
+                <span>Ponto Vistoriado #<span class="num-id"></span></span>
+                <button class="btn-remove" onclick="this.closest('.card').remove()"><i class="fas fa-trash"></i></button>
+            </div>
+            <div class="card-body">
+                <div class="tech-info-row">
+                    <div class="input-group"><label>Ponto</label><input type="text" class="vaz-ponto-nome" placeholder="Ex: Bacia sanitária"></div>
+                    <div class="input-group">
+                        <label>Gravidade</label>
+                        <select class="vaz-gravidade">
+                            <option value="baixa" class="grav-baixa">Baixa / Sem Indício</option>
+                            <option value="media" class="grav-media">Média</option>
+                            <option value="alta" class="grav-alta">Alta</option>
+                            <option value="risco" class="grav-risco">Risco Imediato</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Vazamento Aparente?</label>
+                    <select class="vaz-aparente">
+                        <option value="nao">Não</option>
+                        <option value="sim">Sim</option>
+                        <option value="inconclusivo">Inconclusivo</option>
+                    </select>
+                </div>
+                
+                <div class="fotos-etapa-container" style="margin-top:20px;">
+                    <label>Evidências do Ponto</label>
+                    <div class="lista-fotos"></div>
+                    <button class="btn-add-photo" style="height:60px;" onclick="adicionarFotoEtapa(this)">
+                        <i class="fas fa-camera"></i> Adicionar Foto
+                    </button>
+                </div>
+
+                <div class="input-group">
+                    <label>Descrição Técnica / Observações</label>
+                    <textarea class="vaz-desc" rows="2"></textarea>
+                </div>
+            </div>
+        </section>
+    </template>
+
+    <template id="tmpl-troca-equipamento">
+        <section class="card tech-stage-card" data-tipo="troca-equipamento">
+            <div class="card-header">
+                <span>Troca de Equipamento #<span class="num-id"></span></span>
+                <button class="btn-remove" onclick="this.closest('.card').remove()"><i class="fas fa-trash"></i></button>
+            </div>
+            <div class="card-body">
+                <div class="input-group">
+                    <label>Tipo de Equipamento</label>
+                    <select class="troca-tipo-eq">
+                        <option value="hidrometro">Hidrômetro</option>
+                        <option value="gasometro">Medidor de Gás</option>
+                        <option value="transmissor">Transmissor / Rádio</option>
+                        <option value="lacre">Lacre</option>
+                        <option value="outro">Outro</option>
+                    </select>
+                </div>
+
+                <div class="leitura-box" style="margin-bottom: 20px;">
+                    <p class="leitura-title" style="color: #e74c3c;">EQUIPAMENTO REMOVIDO (ANTES)</p>
+                    <div class="tech-info-row">
+                        <div class="input-group"><label>Nº Série</label><input type="text" class="removido-serie"></div>
+                        <div class="input-group"><label>Leitura Final</label><input type="number" step="0.001" class="removido-leitura" style="font-size: 16px; font-weight: bold; color: #e74c3c;"></div>
+                    </div>
+                    <div class="input-group"><label>Estado</label><input type="text" class="removido-estado" placeholder="Ex: Parado, Danificado..."></div>
+                    <div class="fotos-etapa-container">
+                        <div class="lista-fotos"></div>
+                        <button class="btn-add-photo btn-small-photo" onclick="adicionarFotoEtapaEspecial(this, 'Equipamento Removido (Antes)')">
+                            <i class="fas fa-camera"></i> Foto do Equipamento Removido
+                        </button>
+                    </div>
+                </div>
+
+                <div class="leitura-box" style="margin-bottom: 20px;">
+                    <p class="leitura-title" style="color: #2ecc71;">EQUIPAMENTO INSTALADO (DEPOIS)</p>
+                    <div class="tech-info-row">
+                        <div class="input-group"><label>Nº Série</label><input type="text" class="instalado-serie"></div>
+                        <div class="input-group"><label>Leitura Inic.</label><input type="number" step="0.001" class="instalado-leitura" style="font-size: 16px; font-weight: bold; color: #2ecc71;"></div>
+                    </div>
+                    <div class="input-group"><label>Marca/Modelo</label><input type="text" class="instalado-marca"></div>
+                    <div class="fotos-etapa-container">
+                        <div class="lista-fotos"></div>
+                        <button class="btn-add-photo btn-small-photo" onclick="adicionarFotoEtapaEspecial(this, 'Equipamento Instalado (Depois)')">
+                            <i class="fas fa-camera"></i> Foto do Equipamento Instalado
+                        </button>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Motivo da Troca</label>
+                    <select class="troca-motivo">
+                        <option value="parado">Equipamento parado</option>
+                        <option value="danificado">Equipamento danificado</option>
+                        <option value="sem_comunicacao">Sem comunicação</option>
+                        <option value="preventiva">Substituição preventiva</option>
+                        <option value="outro">Outro (especificar nas obs)</option>
+                    </select>
+                </div>
+
+                <div class="input-group" style="margin-top: 20px;">
+                    <label>Observações Finais da Troca</label>
+                    <textarea class="troca-obs" rows="2"></textarea>
                 </div>
             </div>
         </section>
