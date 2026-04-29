@@ -62,15 +62,16 @@
         </div>
     </div>
 
-    <header class="header">
-        <button onclick="window.location.reload()" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 8px 12px; border-radius: 10px; cursor: pointer; font-size: 12px; font-weight: bold; display: flex; align-items: center; gap: 5px;">
-            <i class="fas fa-arrow-left"></i> Início
-        </button>
-        <div class="logo">
-            <i class="fas fa-water"></i>
-            <span style="font-size: 20px; font-weight: 800; letter-spacing: -1px;">Ecowave</span>
+    <header class="app-header">
+        <div class="header-content">
+            <div class="logo-wrapper" style="display: flex; align-items: center; gap: 15px;">
+                <button onclick="window.location.reload()" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 6px 10px; border-radius: 8px; cursor: pointer; font-size: 11px; font-weight: bold; display: flex; align-items: center; gap: 5px;">
+                    <i class="fas fa-arrow-left"></i> Início
+                </button>
+                <img src="ecowave.png" alt="Ecowave" class="logo-header">
+            </div>
+            <span class="badge" id="header-badge" style="font-size: 10px; font-weight: 800; padding: 4px 8px; border-radius: 6px; background: rgba(255,255,255,0.1); color: var(--accent);">GERAL</span>
         </div>
-        <div class="header-badge" id="header-badge">GERAL</div>
     </header>
 
     <main class="app-container">
@@ -194,6 +195,9 @@
 
         <button type="button" class="btn-primary" onclick="gerarPDF()">
             <i class="fas fa-file-pdf"></i> GERAR RELATÓRIO
+        </button>
+        <button type="button" onclick="window.location.reload()" style="width: 100%; margin-top: 15px; padding: 18px; border: 1px dashed rgba(255,255,255,0.3); border-radius: 20px; background: rgba(255,255,255,0.02); color: white; font-weight: 600; font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+            <i class="fas fa-arrow-left"></i> Voltar ao Menu Inicial
         </button>
     </main>
 
